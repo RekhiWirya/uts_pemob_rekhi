@@ -3,8 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/theme_provider.dart';
 
-git add .
-git commit -m "feat(widgets): add reusable widgets (container, button, text field, hero, theme toggle)"
+
 class ThemeToggleButton extends StatelessWidget {
   const ThemeToggleButton({super.key});
 
