@@ -1,10 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import 'screens/theme_preview_screen.dart';
+import 'providers/quiz_provider.dart';
+import 'providers/theme_provider.dart';
+import 'screens/state_check_screen.dart';
 import 'theme/app_theme.dart';
 
 void main() {
-  runApp(const QuizApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => QuizProvider()),
+      ],
+      child: const QuizApp(),
+    ),
+  );
 }
 
 class QuizApp extends StatelessWidget {
@@ -12,13 +23,16 @@ class QuizApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeMode =
+    context.select<ThemeProvider, ThemeMode>((p) => p.themeMode);
+
     return MaterialApp(
       title: 'Aplikasi Kuis',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system,
-      home: const ThemePreviewScreen(),
+      themeMode: themeMode,
+      home: const StateCheckScreen(),
     );
   }
 }
