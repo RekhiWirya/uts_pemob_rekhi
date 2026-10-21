@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'providers/quiz_provider.dart';
 import 'providers/theme_provider.dart';
-import 'screens/state_check_screen.dart';
+import 'screens/home_screen.dart';
 import 'theme/app_theme.dart';
 
 void main() {
@@ -27,12 +27,12 @@ class QuizApp extends StatelessWidget {
     context.select<ThemeProvider, ThemeMode>((p) => p.themeMode);
 
     return MaterialApp(
-      title: 'Aplikasi Kuis',
+      title: 'Kuis Musik',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: themeMode,
-      home: const StateCheckScreen(),
+      home: const HomeScreen(),
     );
   }
 }
