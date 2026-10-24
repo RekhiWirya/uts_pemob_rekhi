@@ -73,11 +73,10 @@ class QuizScreen extends StatelessWidget {
           icon: quiz.isLastQuestion
               ? Icons.flag_rounded
               : Icons.arrow_forward_rounded,
-          onPressed: !quiz.isCurrentAnswered
-              ? null
-              : quiz.isLastQuestion
-              ? () => _finish(context)
-              : quiz.nextQuestion,
+
+          onPressed: quiz.isCurrentAnswered && !quiz.isLastQuestion
+              ? quiz.nextQuestion
+              : null,
         ),
       ],
     );
