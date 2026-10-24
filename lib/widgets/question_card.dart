@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../utils/responsive.dart';
 
-
+/// Kartu yang menampilkan teks pertanyaan.
 class QuestionCard extends StatelessWidget {
   const QuestionCard({super.key, required this.number, required this.text});
 

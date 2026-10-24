@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../utils/responsive.dart';
 
-
+/// Banner umpan balik setelah menjawab: benar/salah + penjelasan singkat.
 class FeedbackBanner extends StatelessWidget {
   const FeedbackBanner({super.key, required this.isCorrect, this.explanation});
 

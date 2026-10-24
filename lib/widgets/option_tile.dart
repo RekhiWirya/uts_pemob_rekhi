@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../utils/responsive.dart';
 
-
+/// Keadaan visual sebuah pilihan jawaban.
 enum OptionState { idle, correct, wrong, dimmed }
 
-
+/// Satu pilihan jawaban (A, B, C, D).
 class OptionTile extends StatelessWidget {
   const OptionTile({
     super.key,
@@ -16,10 +16,10 @@ class OptionTile extends StatelessWidget {
     required this.onTap,
   });
 
-  final int index;
+  final int index; // 0 = A, 1 = B, dst.
   final String text;
   final OptionState state;
-  final VoidCallback? onTap;
+  final VoidCallback? onTap; // null = tidak bisa ditekan
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +70,7 @@ class OptionTile extends StatelessWidget {
         borderRadius: radius,
         border: Border.all(color: borderColor, width: context.scale(1.5)),
       ),
-
+      // Material transparan agar efek ripple InkWell tetap terlihat di atas warna latar.
       child: Material(
         type: MaterialType.transparency,
         child: InkWell(
