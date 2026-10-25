@@ -21,10 +21,10 @@ class QuizScreen extends StatelessWidget {
     final quiz = context.watch<QuizProvider>();
     final question = quiz.currentQuestion;
     final gap = context.scale(16);
-
+    // Dua kolom di landscape (HP/tablet) dan di layar desktop/web.
     final isWide = context.isLandscape || context.isDesktop;
 
-
+    // Bagian atas: progres + kartu soal.
     final header = Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -173,6 +173,6 @@ class QuizScreen extends StatelessWidget {
       ),
     );
     if (!context.mounted) return;
-    Navigator.of(context).pop();
+    Navigator.of(context).pop(); 
   }
 }
