@@ -64,7 +64,6 @@ class QuizScreen extends StatelessWidget {
           ),
           SizedBox(height: gap * 0.75),
         ],
-
         AnimatedSize(
           duration: const Duration(milliseconds: 250),
           alignment: Alignment.topCenter,
@@ -78,11 +77,8 @@ class QuizScreen extends StatelessWidget {
           )
               : const SizedBox(width: double.infinity),
         ),
-
         CustomButton(
-          label: quiz.isLastQuestion
-              ? 'Lihat Hasil'
-              : 'Soal Berikutnya',
+          label: quiz.isLastQuestion ? 'Lihat Hasil' : 'Soal Berikutnya',
           icon: quiz.isLastQuestion
               ? Icons.flag_rounded
               : Icons.arrow_forward_rounded,
