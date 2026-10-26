@@ -1,7 +1,9 @@
+
 import 'package:flutter/material.dart';
 
 import '../models/question.dart';
 import '../theme/app_colors.dart';
+import '../theme/app_theme.dart';
 import '../utils/responsive.dart';
 
 class QuestionReviewList extends StatelessWidget {
@@ -16,7 +18,6 @@ class QuestionReviewList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final gap = context.scale(12);
 
     return Column(
@@ -27,7 +28,12 @@ class QuestionReviewList extends StatelessWidget {
           padding: EdgeInsets.symmetric(vertical: context.scale(8)),
           child: Text(
             'Rincian Jawaban',
-            style: theme.textTheme.titleLarge,
+            style: TextStyle(
+              fontFamily: AppTheme.fontFamily,
+              fontSize: context.scale(22),
+              fontWeight: FontWeight.w300,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
           ),
         ),
         SizedBox(height: gap * 0.5),
@@ -57,136 +63,149 @@ class _QuestionReviewTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
+    final scheme = Theme.of(context).colorScheme;
     final gap = context.scale(12);
-
     final isCorrect = selectedAnswer == question.correctIndex;
-    final statusColor = isCorrect ? AppColors.success : AppColors.error;
-    final statusIcon = isCorrect ? Icons.check_circle : Icons.cancel;
-    final statusText = isCorrect ? 'Benar' : 'Salah';
+    final statusColor = isCorrect ? AppColors.primary : AppColors.warning;
+    final statusIcon =
+    isCorrect ? Icons.check_circle_rounded : Icons.cancel_rounded;
+    final statusLabel = isCorrect ? 'Benar' : 'Salah';
 
-    return Card(
-      child: Padding(
-        padding: EdgeInsets.all(context.scale(16)),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: context.scale(10),
-                    vertical: context.scale(4),
-                  ),
-                  decoration: BoxDecoration(
-                    color: scheme.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(context.scale(12)),
-                  ),
-                  child: Text(
-                    'Soal $number',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: scheme.onSurface,
-                    ),
-                  ),
-                ),
-                const Spacer(),
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: context.scale(10),
-                    vertical: context.scale(4),
-                  ),
-                  decoration: BoxDecoration(
-                    color: statusColor.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(context.scale(12)),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        statusIcon,
-                        size: context.scale(16),
-                        color: statusColor,
-                      ),
-                      SizedBox(width: context.scale(4)),
-                      Text(
-                        statusText,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: statusColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: gap),
-            Text(
-              question.text,
-              style: theme.textTheme.titleMedium,
-            ),
-            SizedBox(height: gap),
+    final safeSelectedAnswer = selectedAnswer != null &&
+        selectedAnswer! >= 0 &&
+        selectedAnswer! < question.options.length
+        ? question.options[selectedAnswer!]
+        : 'Tidak dijawab';
 
-            // User's answer display
-            _AnswerBox(
-              label: 'Jawaban Kamu',
-              text: selectedAnswer != null
-                  ? question.options[selectedAnswer!]
-                  : 'Tidak dijawab',
-              color: statusColor,
-              icon: statusIcon,
-            ),
-
-            // Correct answer display if user was wrong
-            if (!isCorrect) ...[
-              SizedBox(height: gap * 0.5),
-              _AnswerBox(
-                label: 'Jawaban Benar',
-                text: question.options[question.correctIndex],
-                color: AppColors.success,
-                icon: Icons.check_circle_outline,
-              ),
-            ],
-
-            // Explanation section if available
-            if (question.explanation != null &&
-                question.explanation!.isNotEmpty) ...[
-              SizedBox(height: gap * 0.75),
+    return Container(
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(context.scale(8)),
+        border: Border.all(color: scheme.outline),
+      ),
+      padding: EdgeInsets.all(context.scale(16)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
               Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(context.scale(12)),
+                padding: EdgeInsets.symmetric(
+                  horizontal: context.scale(10),
+                  vertical: context.scale(4),
+                ),
                 decoration: BoxDecoration(
-                  color: scheme.surfaceContainerHighest.withValues(alpha: 0.5),
-                  borderRadius: BorderRadius.circular(context.scale(12)),
-                  border: Border.all(
-                    color: scheme.outline.withValues(alpha: 0.5),
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.circular(9999),
+                ),
+                child: Text(
+                  'Soal $number',
+                  style: TextStyle(
+                    fontFamily: AppTheme.fontFamily,
+                    fontSize: context.scale(12),
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.canvasLight,
                   ),
+                ),
+              ),
+              const Spacer(),
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: context.scale(10),
+                  vertical: context.scale(4),
+                ),
+                decoration: BoxDecoration(
+                  color: statusColor,
+                  borderRadius: BorderRadius.circular(9999),
                 ),
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      Icons.lightbulb_outline_rounded,
-                      size: context.scale(18),
-                      color: scheme.primary,
+                      statusIcon,
+                      size: context.scale(14),
+                      color: AppColors.canvasLight,
                     ),
-                    SizedBox(width: context.scale(8)),
-                    Expanded(
-                      child: Text(
-                        question.explanation!,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: scheme.onSurfaceVariant,
-                        ),
+                    SizedBox(width: context.scale(4)),
+                    Text(
+                      statusLabel,
+                      style: TextStyle(
+                        fontFamily: AppTheme.fontFamily,
+                        fontSize: context.scale(12),
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.canvasLight,
                       ),
                     ),
                   ],
                 ),
               ),
             ],
+          ),
+          SizedBox(height: gap),
+          Text(
+            question.text,
+            style: TextStyle(
+              fontFamily: AppTheme.fontFamily,
+              fontSize: context.scale(18),
+              fontWeight: FontWeight.w300,
+              color: scheme.onSurface,
+            ),
+          ),
+          SizedBox(height: gap),
+          _AnswerBox(
+            label: 'Jawaban Kamu',
+            text: safeSelectedAnswer,
+            bgColor: statusColor.withValues(alpha: 0.10),
+            textColor: statusColor,
+            icon: statusIcon,
+          ),
+          if (!isCorrect) ...[
+            SizedBox(height: gap * 0.5),
+            _AnswerBox(
+              label: 'Jawaban Benar',
+              text: question.options[question.correctIndex],
+              bgColor: AppColors.primary.withValues(alpha: 0.10),
+              textColor: AppColors.primary,
+              icon: Icons.check_circle_outline_rounded,
+            ),
           ],
-        ),
+          if (question.explanation != null &&
+              question.explanation!.isNotEmpty) ...[
+            SizedBox(height: gap * 0.75),
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(context.scale(12)),
+              decoration: BoxDecoration(
+                color: scheme.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(context.scale(8)),
+                border: Border.all(color: scheme.outline),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(
+                    Icons.lightbulb_outline_rounded,
+                    size: context.scale(18),
+                    color: AppColors.primary,
+                  ),
+                  SizedBox(width: context.scale(8)),
+                  Expanded(
+                    child: Text(
+                      question.explanation!,
+                      style: TextStyle(
+                        fontFamily: AppTheme.fontFamily,
+                        fontSize: context.scale(14),
+                        fontWeight: FontWeight.w400,
+                        color: scheme.onSurface,
+                        height: 1.5,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }
@@ -196,19 +215,19 @@ class _AnswerBox extends StatelessWidget {
   const _AnswerBox({
     required this.label,
     required this.text,
-    required this.color,
+    required this.bgColor,
+    required this.textColor,
     required this.icon,
   });
 
   final String label;
   final String text;
-  final Color color;
+  final Color bgColor;
+  final Color textColor;
   final IconData icon;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(
@@ -216,31 +235,37 @@ class _AnswerBox extends StatelessWidget {
         vertical: context.scale(8),
       ),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(context.scale(10)),
-        border: Border.all(color: color.withValues(alpha: 0.25)),
+        color: bgColor,
+        borderRadius: BorderRadius.circular(context.scale(8)),
       ),
       child: Row(
         children: [
-          Icon(icon, size: context.scale(18), color: color),
+          Icon(
+            icon,
+            size: context.scale(18),
+            color: textColor,
+          ),
           SizedBox(width: context.scale(8)),
           Expanded(
             child: RichText(
               text: TextSpan(
-                style: theme.textTheme.bodyMedium,
+                style: TextStyle(
+                  fontFamily: AppTheme.fontFamily,
+                  fontSize: context.scale(14),
+                ),
                 children: [
                   TextSpan(
                     text: '$label: ',
                     style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: color,
+                      fontWeight: FontWeight.w700,
+                      color: textColor,
                     ),
                   ),
                   TextSpan(
                     text: text,
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
-                      color: theme.colorScheme.onSurface,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                 ],
