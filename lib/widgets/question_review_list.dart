@@ -18,6 +18,7 @@ class QuestionReviewList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     final gap = context.scale(12);
 
     return Column(
@@ -32,7 +33,7 @@ class QuestionReviewList extends StatelessWidget {
               fontFamily: AppTheme.fontFamily,
               fontSize: context.scale(22),
               fontWeight: FontWeight.w300,
-              color: Theme.of(context).colorScheme.onSurface,
+              color: scheme.onSurface,
             ),
           ),
         ),
@@ -61,21 +62,37 @@ class _QuestionReviewTile extends StatelessWidget {
   final Question question;
   final int? selectedAnswer;
 
+  String _userAnswerText() {
+    if (selectedAnswer == null) {
+      return 'Tidak dijawab';
+    }
+
+    if (selectedAnswer! < 0 ||
+        selectedAnswer! >= question.options.length) {
+      return selectedAnswer == -1
+          ? 'Waktu Habis (Tidak dijawab)'
+          : 'Tidak dijawab';
+    }
+
+    return question.options[selectedAnswer!];
+  }
+
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final gap = context.scale(12);
-    final isCorrect = selectedAnswer == question.correctIndex;
-    final statusColor = isCorrect ? AppColors.primary : AppColors.warning;
-    final statusIcon =
-    isCorrect ? Icons.check_circle_rounded : Icons.cancel_rounded;
-    final statusLabel = isCorrect ? 'Benar' : 'Salah';
 
-    final safeSelectedAnswer = selectedAnswer != null &&
+    final isCorrect = selectedAnswer != null &&
         selectedAnswer! >= 0 &&
-        selectedAnswer! < question.options.length
-        ? question.options[selectedAnswer!]
-        : 'Tidak dijawab';
+        selectedAnswer! < question.options.length &&
+        selectedAnswer == question.correctIndex;
+
+    final statusColor =
+    isCorrect ? AppColors.primary : AppColors.warning;
+    final statusIcon = isCorrect
+        ? Icons.check_circle_rounded
+        : Icons.cancel_rounded;
+    final statusLabel = isCorrect ? 'Benar' : 'Salah';
 
     return Container(
       decoration: BoxDecoration(
@@ -154,7 +171,7 @@ class _QuestionReviewTile extends StatelessWidget {
           SizedBox(height: gap),
           _AnswerBox(
             label: 'Jawaban Kamu',
-            text: safeSelectedAnswer,
+            text: _userAnswerText(),
             bgColor: statusColor.withValues(alpha: 0.10),
             textColor: statusColor,
             icon: statusIcon,
