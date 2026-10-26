@@ -16,6 +16,7 @@ class QuizProvider extends ChangeNotifier {
 
 
   List<Question> get questions => List.unmodifiable(_questions);
+  List<int?> get answers => List.unmodifiable(_answers);
   String get userName => _userName;
   int get currentIndex => _currentIndex;
   int get totalQuestions => _questions.length;
@@ -39,8 +40,27 @@ class QuizProvider extends ChangeNotifier {
     return correct;
   }
 
+  int get wrongCount => totalQuestions - score;
 
-  double get scorePercent => score / totalQuestions * 100;
+  double get scorePercent => totalQuestions > 0 ? (score / totalQuestions * 100) : 0;
+
+  String get resultTitle {
+    final pct = scorePercent;
+    if (pct == 100) return 'Luar Biasa! Sempurna!';
+    if (pct >= 80) return 'Sangat Bagus!';
+    if (pct >= 60) return 'Bagus!';
+    if (pct >= 40) return 'Cukup Bagus!';
+    return 'Tetap Semangat!';
+  }
+
+  String get resultMessage {
+    final pct = scorePercent;
+    if (pct == 100) return 'Kamu menjawab semua pertanyaan dengan benar!';
+    if (pct >= 80) return 'Pengetahuan musikmu sangat luar biasa!';
+    if (pct >= 60) return 'Hasil yang baik, tingkatkan terus pemahaman musikmu!';
+    if (pct >= 40) return 'Hasil lumayan, coba ulas kembali jawabanmu.';
+    return 'Jangan berkecil hati, coba lagi dan raih skor lebih tinggi!';
+  }
 
 
   void setUserName(String name) {
