@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../theme/app_colors.dart';
+import '../theme/app_theme.dart';
 import '../utils/responsive.dart';
-
 
 class QuizProgressBar extends StatelessWidget {
   const QuizProgressBar({
@@ -17,7 +18,7 @@ class QuizProgressBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
-    final value = current / total;
+    final value = total > 0 ? (current / total) : 0.0;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -25,27 +26,38 @@ class QuizProgressBar extends StatelessWidget {
       children: [
         Row(
           children: [
-            Text('Soal $current dari $total', style: theme.textTheme.titleMedium),
+            Text(
+              'Soal $current dari $total',
+              style: TextStyle(
+                fontFamily: AppTheme.fontFamily,
+                fontSize: context.scale(16),
+                fontWeight: FontWeight.w600,
+                color: scheme.onSurface,
+              ),
+            ),
             const Spacer(),
             Text(
               '${(value * 100).round()}%',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: scheme.onSurfaceVariant,
+              style: TextStyle(
+                fontFamily: AppTheme.fontFamily,
+                fontSize: context.scale(14),
+                fontWeight: FontWeight.w600,
+                color: AppColors.primary,
               ),
             ),
           ],
         ),
         SizedBox(height: context.scale(8)),
         ClipRRect(
-          borderRadius: BorderRadius.circular(context.scale(8)),
+          borderRadius: BorderRadius.circular(9999), // Fully rounded pill
           child: TweenAnimationBuilder<double>(
             tween: Tween<double>(begin: 0, end: value),
             duration: const Duration(milliseconds: 300),
             builder: (context, animated, _) => LinearProgressIndicator(
               value: animated,
               minHeight: context.scale(8),
-              color: scheme.primary,
-              backgroundColor: scheme.surfaceContainerHighest,
+              color: AppColors.primary,
+              backgroundColor: AppColors.surfaceSoft,
             ),
           ),
         ),

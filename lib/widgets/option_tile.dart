@@ -1,6 +1,8 @@
+
 import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
+import '../theme/app_theme.dart';
 import '../utils/responsive.dart';
 
 /// Keadaan visual sebuah pilihan jawaban.
@@ -16,50 +18,85 @@ class OptionTile extends StatelessWidget {
     required this.onTap,
   });
 
-  final int index; // 0 = A, 1 = B, dst.
+  final int index; // 0 = A, 1 = B, dan seterusnya.
   final String text;
   final OptionState state;
-  final VoidCallback? onTap; // null = tidak bisa ditekan
+  final VoidCallback? onTap; // null = tidak bisa ditekan.
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
-    final radius = BorderRadius.circular(context.scale(16));
+    final radius = BorderRadius.circular(context.scale(8));
+
+    final Color background;
+    final Color borderColor;
+    final Color badgeBg;
+    final Color badgeText;
+    final Color textColor;
+
+    switch (state) {
+      case OptionState.correct:
+        background = AppColors.primary.withValues(alpha: 0.08);
+        borderColor = AppColors.primary;
+        badgeBg = AppColors.primary;
+        badgeText = AppColors.canvasLight;
+        textColor = scheme.onSurface;
+        break;
+
+      case OptionState.wrong:
+        background = AppColors.warning.withValues(alpha: 0.08);
+        borderColor = AppColors.warning;
+        badgeBg = AppColors.warning;
+        badgeText = AppColors.canvasLight;
+        textColor = scheme.onSurface;
+        break;
+
+      case OptionState.dimmed:
+        background =
+            scheme.surfaceContainerHighest.withValues(alpha: 0.4);
+        borderColor = scheme.outline.withValues(alpha: 0.3);
+        badgeBg = scheme.outline.withValues(alpha: 0.3);
+        badgeText = scheme.onSurfaceVariant;
+        textColor = scheme.onSurfaceVariant;
+        break;
+
+      case OptionState.idle:
+        background = scheme.surfaceContainerLow;
+        borderColor = scheme.outline;
+        badgeBg = AppColors.primary;
+        badgeText = AppColors.canvasLight;
+        textColor = scheme.onSurface;
+        break;
+    }
 
     final isResult =
         state == OptionState.correct || state == OptionState.wrong;
-    final accent =
-    state == OptionState.correct ? AppColors.success : AppColors.error;
-
-    final background =
-    isResult ? accent.withValues(alpha: 0.12) : scheme.surfaceContainerLow;
-    final borderColor = isResult ? accent : scheme.outline;
-    final badgeColor = isResult ? accent : scheme.surfaceContainerHighest;
-    final badgeContent = switch (state) {
-      OptionState.correct => AppColors.onSecondary,
-      OptionState.wrong => Colors.white,
-      _ => scheme.onSurface,
-    };
-    final textColor =
-    state == OptionState.dimmed ? scheme.onSurfaceVariant : scheme.onSurface;
 
     final badge = Container(
       width: context.scale(36),
       height: context.scale(36),
       alignment: Alignment.center,
-      decoration: BoxDecoration(color: badgeColor, shape: BoxShape.circle),
+      decoration: BoxDecoration(
+        color: badgeBg,
+        borderRadius: BorderRadius.circular(9999),
+      ),
       child: isResult
           ? Icon(
         state == OptionState.correct
             ? Icons.check_rounded
             : Icons.close_rounded,
-        color: badgeContent,
+        color: badgeText,
         size: context.scale(20),
       )
           : Text(
-        String.fromCharCode(65 + index), // 65 = 'A'
-        style: theme.textTheme.titleMedium?.copyWith(color: badgeContent),
+        String.fromCharCode(65 + index),
+        style: TextStyle(
+          fontFamily: AppTheme.fontFamily,
+          fontSize: context.scale(16),
+          fontWeight: FontWeight.w700,
+          color: badgeText,
+        ),
       ),
     );
 
@@ -68,9 +105,12 @@ class OptionTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: background,
         borderRadius: radius,
-        border: Border.all(color: borderColor, width: context.scale(1.5)),
+        border: Border.all(
+          color: borderColor,
+          width: context.scale(1.5),
+        ),
       ),
-      // Material transparan agar efek ripple InkWell tetap terlihat di atas warna latar.
+      // Material transparan agar efek ripple InkWell tetap terlihat.
       child: Material(
         type: MaterialType.transparency,
         child: InkWell(
@@ -78,8 +118,8 @@ class OptionTile extends StatelessWidget {
           onTap: onTap,
           child: Padding(
             padding: EdgeInsets.symmetric(
-              horizontal: context.scale(14),
-              vertical: context.scale(12),
+              horizontal: context.scale(16),
+              vertical: context.scale(14),
             ),
             child: Row(
               children: [
@@ -88,9 +128,14 @@ class OptionTile extends StatelessWidget {
                 Expanded(
                   child: Text(
                     text,
-                    style: theme.textTheme.bodyLarge?.copyWith(
+                    style: TextStyle(
+                      fontFamily: AppTheme.fontFamily,
+                      fontSize: context.scale(16),
+                      fontWeight: isResult
+                          ? FontWeight.w600
+                          : FontWeight.w400,
                       color: textColor,
-                      fontWeight: isResult ? FontWeight.w600 : FontWeight.w400,
+                      height: 1.5,
                     ),
                   ),
                 ),

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../theme/app_colors.dart';
+import '../theme/app_theme.dart';
 import '../utils/responsive.dart';
-
 
 class AppHero extends StatelessWidget {
   const AppHero({super.key, required this.title, this.subtitle});
@@ -13,7 +14,7 @@ class AppHero extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
-    final badge = context.scale(96);
+    final badge = context.scale(80);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -22,33 +23,39 @@ class AppHero extends StatelessWidget {
           width: badge,
           height: badge,
           alignment: Alignment.center,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             shape: BoxShape.circle,
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [scheme.primary, scheme.secondary],
-            ),
+            color: AppColors.primary, // PlayStation Blue
           ),
           child: Icon(
-            Icons.music_note_rounded,
-            size: badge * 0.55,
-            color: Colors.white,
+            Icons.videogame_asset_rounded,
+            size: badge * 0.52,
+            color: AppColors.canvasLight,
           ),
         ),
-        SizedBox(height: context.scale(24)),
+        SizedBox(height: context.scale(20)),
         Text(
           title,
           textAlign: TextAlign.center,
-          style: theme.textTheme.displaySmall,
+          style: TextStyle(
+            fontFamily: AppTheme.fontFamily,
+            fontSize: context.scale(35),
+            fontWeight: FontWeight.w300, // Light 300 PlayStation signature
+            height: 1.25,
+            color: scheme.onSurface,
+          ),
         ),
         if (subtitle != null) ...[
           SizedBox(height: context.scale(8)),
           Text(
             subtitle!,
             textAlign: TextAlign.center,
-            style: theme.textTheme.bodyLarge?.copyWith(
+            style: TextStyle(
+              fontFamily: AppTheme.fontFamily,
+              fontSize: context.scale(16),
+              fontWeight: FontWeight.w400,
               color: scheme.onSurfaceVariant,
+              height: 1.5,
             ),
           ),
         ],
