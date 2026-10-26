@@ -18,10 +18,10 @@ class OptionTile extends StatelessWidget {
     required this.onTap,
   });
 
-  final int index; // 0 = A, 1 = B, dan seterusnya.
+  final int index;
   final String text;
   final OptionState state;
-  final VoidCallback? onTap; // null = tidak bisa ditekan.
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -131,9 +131,8 @@ class OptionTile extends StatelessWidget {
                     style: TextStyle(
                       fontFamily: AppTheme.fontFamily,
                       fontSize: context.scale(16),
-                      fontWeight: isResult
-                          ? FontWeight.w600
-                          : FontWeight.w400,
+                      fontWeight:
+                      isResult ? FontWeight.w600 : FontWeight.w400,
                       color: textColor,
                       height: 1.5,
                     ),

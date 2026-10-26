@@ -1,14 +1,21 @@
+
 import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
 import '../theme/app_theme.dart';
 import '../utils/responsive.dart';
 
-/// Banner umpan balik setelah menjawab: benar/salah + penjelasan singkat.
+/// Banner umpan balik setelah menjawab soal.
 class FeedbackBanner extends StatelessWidget {
-  const FeedbackBanner({super.key, required this.isCorrect, this.explanation});
+  const FeedbackBanner({
+    super.key,
+    required this.isCorrect,
+    this.isTimedOut = false,
+    this.explanation,
+  });
 
   final bool isCorrect;
+  final bool isTimedOut;
   final String? explanation;
 
   @override
@@ -16,7 +23,24 @@ class FeedbackBanner extends StatelessWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
 
-    final accent = isCorrect ? AppColors.primary : AppColors.warning;
+    final IconData icon;
+    final String title;
+    final Color accent;
+
+    if (isTimedOut) {
+      icon = Icons.timer_off_rounded;
+      title = 'Waktu Habis! Soal dihitung salah.';
+      accent = AppColors.warning;
+    } else if (isCorrect) {
+      icon = Icons.check_circle_rounded;
+      title = 'Jawabanmu benar!';
+      accent = AppColors.primary;
+    } else {
+      icon = Icons.cancel_rounded;
+      title = 'Belum tepat!';
+      accent = AppColors.warning;
+    }
+
     final bgColor = accent.withValues(alpha: 0.08);
 
     return Container(
@@ -24,14 +48,14 @@ class FeedbackBanner extends StatelessWidget {
       padding: EdgeInsets.all(context.scale(16)),
       decoration: BoxDecoration(
         color: bgColor,
-        borderRadius: BorderRadius.circular(context.scale(8)), // 8px radius
+        borderRadius: BorderRadius.circular(context.scale(8)),
         border: Border.all(color: accent),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(
-            isCorrect ? Icons.check_circle_rounded : Icons.cancel_rounded,
+            icon,
             color: accent,
             size: context.scale(22),
           ),
@@ -42,7 +66,7 @@ class FeedbackBanner extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  isCorrect ? 'Jawabanmu benar!' : 'Belum tepat',
+                  title,
                   style: TextStyle(
                     fontFamily: AppTheme.fontFamily,
                     fontSize: context.scale(16),
@@ -50,7 +74,8 @@ class FeedbackBanner extends StatelessWidget {
                     color: accent,
                   ),
                 ),
-                if (explanation != null && explanation!.isNotEmpty) ...[
+                if (explanation != null &&
+                    explanation!.isNotEmpty) ...[
                   SizedBox(height: context.scale(4)),
                   Text(
                     explanation!,

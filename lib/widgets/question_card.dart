@@ -32,7 +32,7 @@ class QuestionCard extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // PlayStation Badge Info Pill.
+          // Badge informasi dengan bentuk pill.
           Container(
             padding: EdgeInsets.symmetric(
               horizontal: context.scale(12),

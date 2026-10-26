@@ -9,14 +9,31 @@ import '../widgets/feedback_banner.dart';
 import '../widgets/option_tile.dart';
 import '../widgets/question_card.dart';
 import '../widgets/quiz_progress_bar.dart';
+import '../widgets/quiz_timer_widget.dart';
 import '../widgets/responsive_container.dart';
 import '../widgets/theme_toggle_button.dart';
 import 'result_screen.dart';
 
-class QuizScreen extends StatelessWidget {
+class QuizScreen extends StatefulWidget {
   const QuizScreen({super.key});
 
   static const double _wideMaxWidth = 1000;
+
+  @override
+  State<QuizScreen> createState() => _QuizScreenState();
+}
+
+class _QuizScreenState extends State<QuizScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        context.read<QuizProvider>().startQuestionTimer();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +44,7 @@ class QuizScreen extends StatelessWidget {
     // Dua kolom pada layar landscape, tablet, dan desktop.
     final isWide = context.isLandscape || context.isDesktop;
 
-    // Bagian atas: progres dan kartu soal.
+    // Header berisi progres, timer, dan kartu soal.
     final header = Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -35,6 +52,12 @@ class QuizScreen extends StatelessWidget {
         QuizProgressBar(
           current: quiz.currentIndex + 1,
           total: quiz.totalQuestions,
+        ),
+        SizedBox(height: gap * 0.75),
+        QuizTimerWidget(
+          remainingSeconds: quiz.remainingSeconds,
+          progress: quiz.timerProgress,
+          isAnswered: quiz.isCurrentAnswered,
         ),
         SizedBox(height: gap * 1.25),
         QuestionCard(
@@ -44,7 +67,7 @@ class QuizScreen extends StatelessWidget {
       ],
     );
 
-    // Bagian pilihan jawaban dan tombol navigasi.
+    // Pilihan jawaban dan tombol navigasi.
     final answers = Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -72,6 +95,7 @@ class QuizScreen extends StatelessWidget {
             padding: EdgeInsets.only(bottom: gap),
             child: FeedbackBanner(
               isCorrect: quiz.isCurrentCorrect,
+              isTimedOut: quiz.isTimedOut,
               explanation: question.explanation,
             ),
           )
@@ -99,6 +123,7 @@ class QuizScreen extends StatelessWidget {
         final leave = await _confirmExit(context);
 
         if (leave == true && context.mounted) {
+          context.read<QuizProvider>().stopTimer();
           Navigator.of(context).pop();
         }
       },
@@ -114,7 +139,7 @@ class QuizScreen extends StatelessWidget {
             key: ValueKey(quiz.currentIndex),
             child: ResponsiveContainer(
               maxWidth: isWide
-                  ? _wideMaxWidth
+                  ? QuizScreen._wideMaxWidth
                   : Responsive.maxContentWidth,
               child: isWide
                   ? Row(
@@ -173,6 +198,8 @@ class QuizScreen extends StatelessWidget {
   }
 
   static void _finish(BuildContext context) {
+    context.read<QuizProvider>().stopTimer();
+
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
         builder: (_) => const ResultScreen(),

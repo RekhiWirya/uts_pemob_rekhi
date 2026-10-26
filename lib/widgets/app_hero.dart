@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
@@ -5,7 +6,11 @@ import '../theme/app_theme.dart';
 import '../utils/responsive.dart';
 
 class AppHero extends StatelessWidget {
-  const AppHero({super.key, required this.title, this.subtitle});
+  const AppHero({
+    super.key,
+    required this.title,
+    this.subtitle,
+  });
 
   final String title;
   final String? subtitle;
@@ -14,23 +19,35 @@ class AppHero extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
-    final badge = context.scale(80);
+    final logoSize = context.scale(100);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          width: badge,
-          height: badge,
-          alignment: Alignment.center,
-          decoration: const BoxDecoration(
+          width: logoSize,
+          height: logoSize,
+          padding: EdgeInsets.all(context.scale(3)),
+          decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: AppColors.primary, // PlayStation Blue
+            color: AppColors.primary,
+            border: Border.all(
+              color: AppColors.primary,
+              width: 2,
+            ),
           ),
-          child: Icon(
-            Icons.videogame_asset_rounded,
-            size: badge * 0.52,
-            color: AppColors.canvasLight,
+          child: ClipOval(
+            child: Image.asset(
+              'assets/images/app_logo.jpg',
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Icon(
+                  Icons.music_note_rounded,
+                  size: logoSize * 0.52,
+                  color: scheme.onPrimary,
+                );
+              },
+            ),
           ),
         ),
         SizedBox(height: context.scale(20)),
@@ -40,7 +57,7 @@ class AppHero extends StatelessWidget {
           style: TextStyle(
             fontFamily: AppTheme.fontFamily,
             fontSize: context.scale(35),
-            fontWeight: FontWeight.w300, // Light 300 PlayStation signature
+            fontWeight: FontWeight.w300,
             height: 1.25,
             color: scheme.onSurface,
           ),
